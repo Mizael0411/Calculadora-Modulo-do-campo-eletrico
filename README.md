@@ -9,8 +9,9 @@ Com base nos valores de carga e  distancia das cargas, conseguimos calcular o mo
 
 ## 📸 Preview da interface
 
-![preview]()
+![preview](Janela1)
 
+![preview](Janela2)
 ---
 
 ## 🚀 Funcionalidades
