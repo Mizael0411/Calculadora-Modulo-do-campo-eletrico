@@ -1,0 +1,121 @@
+package com.mycompany.calculadoracampoeletrico;
+
+/**
+ * Classe responsável pelos cálculos do campo elétrico
+ */
+public class Calculadora {
+
+    // Constantes físicas
+    private double k;         // Constante eletrostática (9e9 N·m²/C²)
+    private double e;         // Carga elementar (1.6e-19 C)
+    private double d_micro;   // Distância em micrômetros (fornecida pelo usuário)
+    private double d;        // Distância convertida para metros
+
+    // Valores das cargas (em múltiplos da carga elementar)
+    private double q1;
+    private double q2;
+    private double q3;
+    private double q4;
+
+    // Componentes do campo elétrico resultante
+    private double ex = 0;  // Componente horizontal do campo
+    private double ey = 0;  // Componente vertical do campo
+
+    // Módulos dos campos individuais
+    private double E1, E2, E3, E4;
+    
+    /**
+     * Construtor da calculadora
+     *  k Constante eletrostática
+     *  e Carga elementar
+     *  d_micro Distância em micrômetros
+     */
+    public Calculadora(double k, double e, double d_micro) {
+        this.k = 9e9;       // Valor fixo da constante eletrostática
+        this.e = 1.6e-19;   // Valor fixo da carga elementar
+        this.d_micro = d_micro; // Distância em micrômetros
+    }
+
+    /**
+     * Calcula os módulos dos campos elétricos individuais
+     * Considera:
+     * - Q1, Q2 e Q3 estão a distância 'd' do ponto P
+     * - Q4 está a distância '2d' do ponto P
+     */
+    public void CalcularModulo(){
+        // Converte micrômetros para metros
+        d = d_micro * 1e-6;
+        
+        // Calcula o módulo do campo para cada carga (lei de Coulomb)
+        E1 = k * Math.abs(q1) / (d * d);   // Campo de Q1
+        E2 = k * Math.abs(q2) / (d * d);   // Campo de Q2
+        E3 = k * Math.abs(q3) / (d * d);   // Campo de Q3
+        E4 = k * Math.abs(q4) / ((2 * d) * (2 * d)); // Campo de Q4 (distância 2d)
+    }
+
+    /**
+     * Determina a direção do campo elétrico resultante
+     * baseado no sinal das cargas
+     */
+    public void VerificarDirecao(){
+        // Q1 (topo) - afeta componente vertical (ey)
+        if (q1 > 0) {
+            ey += -E1;  // Carga positiva: campo "para fora" (para cima -> negativo em ey)
+        } else {
+            ey += +E1;  // Carga negativa: campo "para dentro" (para baixo -> positivo em ey)
+        }
+
+        // Q2 (base) - afeta componente vertical (ey)
+        if (q2 > 0) {
+            ey += +E2;  // Carga positiva: campo "para fora" (para baixo -> positivo em ey)
+        } else {
+            ey += -E2;  // Carga negativa: campo "para dentro" (para cima -> negativo em ey)
+        }
+
+        // Q3 (esquerda) - afeta componente horizontal (ex)
+        if (q3 > 0) {
+            ex += +E3;  // Carga positiva: campo "para fora" (para direita -> positivo em ex)
+        } else {
+            ex += -E3;  // Carga negativa: campo "para dentro" (para esquerda -> negativo em ex)
+        }
+
+        // Q4 (direita, a 2d) - afeta componente horizontal (ex)
+        if (q4 > 0) {
+            ex += -E4;  // Carga positiva: campo "para fora" (para esquerda -> negativo em ex)
+        } else {
+            ex += +E4;  // Carga negativa: campo "para dentro" (para direita -> positivo em ex)
+        }
+    }
+
+    // Métodos de acesso (getters e setters)
+    
+    public double getEx() {
+        return ex;
+    }
+
+    public void setEx(double ex) {
+        this.ex = ex;
+    }
+
+    public double getEy() {
+        return ey;
+    }
+
+    public void setEy(double ey) {
+        this.ey = ey;
+    }
+
+    /**
+     * Configura as cargas, convertendo para Coulombs
+     *  q1 Carga 1 (em múltiplos de 'e')
+     *  q2 Carga 2 (em múltiplos de 'e')
+     *  q3 Carga 3 (em múltiplos de 'e')
+     *  q4 Carga 4 (em múltiplos de 'e')
+     */
+    public void setCargas(double q1, double q2, double q3, double q4) {
+        this.q1 = q1 * e;  // Converte para Coulombs
+        this.q2 = q2 * e;
+        this.q3 = q3 * e;
+        this.q4 = q4 * e;
+    }
+}
